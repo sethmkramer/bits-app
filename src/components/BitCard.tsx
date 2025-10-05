@@ -31,7 +31,7 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
                 {bit.children.photo_url ? (
                   <img src={bit.children.photo_url} alt={bit.children.name} className="w-full h-full object-cover" />
                 ) : (
-                  <AvatarFallback className="text-sm font-semibold" style={{ backgroundColor: `${childColor}20`, color: childColor }}>
+                  <AvatarFallback className="text-sm font-semibold text-white" style={{ backgroundColor: childColor }}>
                     {bit.children.name.charAt(0)}
                   </AvatarFallback>
                 )}

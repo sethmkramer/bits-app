@@ -93,7 +93,7 @@ export default function Children() {
                     {child.photo_url ? (
                       <img src={child.photo_url} alt={child.name} className="w-full h-full object-cover" />
                     ) : (
-                      <AvatarFallback className="font-semibold text-xl" style={{ backgroundColor: `${child.color}20`, color: child.color }}>
+                      <AvatarFallback className="font-semibold text-xl text-white" style={{ backgroundColor: child.color }}>
                         {child.name.charAt(0)}
                       </AvatarFallback>
                     )}
