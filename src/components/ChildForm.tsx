@@ -10,11 +10,7 @@ import type { Child } from '@/hooks/useChildren';
 
 const CHILD_COLORS = [
   { name: 'Electric Blue', value: 'hsl(211, 100%, 50%)' },
-  { name: 'Cyan', value: 'hsl(195, 100%, 45%)' },
-  { name: 'Sky Blue', value: 'hsl(200, 95%, 48%)' },
   { name: 'Pink', value: 'hsl(330, 85%, 55%)' },
-  { name: 'Rose', value: 'hsl(350, 90%, 60%)' },
-  { name: 'Magenta', value: 'hsl(315, 80%, 50%)' },
   { name: 'Purple', value: 'hsl(270, 70%, 55%)' },
   { name: 'Orange', value: 'hsl(25, 95%, 53%)' },
   { name: 'Green', value: 'hsl(145, 65%, 45%)' },
@@ -185,7 +181,7 @@ export const ChildForm = ({ open, onOpenChange, onSubmit, child, isLoading }: Ch
           </div>
           <div className="space-y-2">
             <Label>Color *</Label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-5 gap-3">
               {CHILD_COLORS.map((colorOption) => (
                 <button
                   key={colorOption.value}
