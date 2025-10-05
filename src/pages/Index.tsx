@@ -37,8 +37,16 @@ const Index = () => {
   }, [user, authLoading, navigate]);
 
   useEffect(() => {
-    if (user && !childrenLoading && children.length === 0) {
+    // Only show onboarding if:
+    // 1. User is logged in
+    // 2. Children have finished loading
+    // 3. No children exist
+    // 4. Haven't seen onboarding before (stored in localStorage)
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    
+    if (user && !childrenLoading && children.length === 0 && !hasSeenOnboarding) {
       setShowOnboarding(true);
+      localStorage.setItem('hasSeenOnboarding', 'true');
     }
   }, [user, children, childrenLoading]);
 
