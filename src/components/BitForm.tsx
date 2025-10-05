@@ -190,6 +190,34 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
+              <Label htmlFor="context">Context (optional)</Label>
+              <div className="flex items-center gap-2">
+                {contextVoiceStatus === 'recording' && (
+                  <span className="text-sm text-red-500 animate-pulse">● Listening...</span>
+                )}
+                {contextVoiceStatus === 'processing' && (
+                  <span className="text-sm text-blue-500">Transcribing...</span>
+                )}
+                {contextVoiceStatus === 'success' && (
+                  <span className="text-sm text-green-500">✓ Done!</span>
+                )}
+                <VoiceRecorder 
+                  onTranscription={(transcribedText) => setContext(transcribedText)} 
+                  onStatusChange={setContextVoiceStatus}
+                />
+              </div>
+            </div>
+            <Input
+              id="context"
+              value={context}
+              onChange={(e) => setContext(e.target.value)}
+              placeholder="Where were you? What was happening? (Type or use voice recording)"
+              disabled={isLoading || contextVoiceStatus !== 'idle'}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
               <Label htmlFor="text">Quote or Memory *</Label>
               <div className="flex items-center gap-2">
                 {textVoiceStatus === 'recording' && (
@@ -221,34 +249,6 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
             <p className="text-xs text-muted-foreground text-right">
               {text.length} / 5000 characters
             </p>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="context">Context (optional)</Label>
-              <div className="flex items-center gap-2">
-                {contextVoiceStatus === 'recording' && (
-                  <span className="text-sm text-red-500 animate-pulse">● Listening...</span>
-                )}
-                {contextVoiceStatus === 'processing' && (
-                  <span className="text-sm text-blue-500">Transcribing...</span>
-                )}
-                {contextVoiceStatus === 'success' && (
-                  <span className="text-sm text-green-500">✓ Done!</span>
-                )}
-                <VoiceRecorder 
-                  onTranscription={(transcribedText) => setContext(transcribedText)} 
-                  onStatusChange={setContextVoiceStatus}
-                />
-              </div>
-            </div>
-            <Input
-              id="context"
-              value={context}
-              onChange={(e) => setContext(e.target.value)}
-              placeholder="Where were you? What was happening? (Type or use voice recording)"
-              disabled={isLoading || contextVoiceStatus !== 'idle'}
-            />
           </div>
 
           <div className="space-y-2">
