@@ -150,14 +150,14 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
                 <SelectValue placeholder="Select a child" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="add-new" className="text-primary font-medium">
-                  + Add New Kid
-                </SelectItem>
                 {children.map((child) => (
                   <SelectItem key={child.id} value={child.id}>
                     {child.name}
                   </SelectItem>
                 ))}
+                <SelectItem value="add-new" className="text-primary font-medium">
+                  + Add New Kid
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
