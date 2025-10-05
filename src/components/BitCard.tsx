@@ -80,15 +80,13 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
 
         {/* Photo */}
         {bit.photo_url && (
-          <div className="px-4 pb-3">
-            <div className="w-full overflow-hidden rounded-3xl bg-muted">
-              <img
-                src={bit.photo_url}
-                alt="Bit memory"
-                className="w-full h-auto object-contain"
-                style={{ maxHeight: '320px' }}
-              />
-            </div>
+          <div className="px-4 pb-3 flex justify-center">
+            <img
+              src={bit.photo_url}
+              alt="Bit memory"
+              className="rounded-3xl object-contain"
+              style={{ maxHeight: '320px', maxWidth: '100%' }}
+            />
           </div>
         )}
 
