@@ -12,7 +12,7 @@ import { BitForm } from '@/components/BitForm';
 import { BitCard } from '@/components/BitCard';
 import { BottomNav } from '@/components/BottomNav';
 import { TimelineFilters } from '@/components/TimelineFilters';
-import { LogOut, Download, Settings, Menu } from 'lucide-react';
+import { LogOut, Download, Settings, Menu, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { Bit } from '@/hooks/useBits';
 import { format, parseISO } from 'date-fns';
@@ -28,6 +28,7 @@ const Index = () => {
 
   const [showBitForm, setShowBitForm] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [editingBit, setEditingBit] = useState<Bit | undefined>();
 
   useEffect(() => {
@@ -105,6 +106,13 @@ const Index = () => {
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
           <h1 className="text-xl font-bold">Timeline</h1>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => setShowFilters(!showFilters)}
+          >
+            <Search className="h-5 w-5" />
+          </Button>
           <div className="flex items-center gap-2">
             {isInstallable && (
               <Button size="icon" variant="ghost" onClick={promptInstall}>
@@ -134,7 +142,9 @@ const Index = () => {
 
       {/* Main content */}
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        <TimelineFilters children={children} onFilterChange={setFilters} />
+        {showFilters && (
+          <TimelineFilters children={children} onFilterChange={setFilters} />
+        )}
 
         {bitsLoading ? (
           <p className="text-center text-muted-foreground py-12">Loading...</p>
