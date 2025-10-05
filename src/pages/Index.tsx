@@ -108,9 +108,9 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <div className="w-14 h-10 flex items-center justify-center">
               <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="0" y="20" width="18" height="10" rx="1.5" fill="#FFB84D" stroke="#2C1810" strokeWidth="2"/>
-                <rect x="6" y="10" width="18" height="10" rx="1.5" fill="#FF6B6B" stroke="#2C1810" strokeWidth="2"/>
-                <rect x="12" y="0" width="18" height="10" rx="1.5" fill="#4ECDC4" stroke="#2C1810" strokeWidth="2"/>
+                <rect x="2" y="20" width="18" height="10" rx="1.5" fill="#FFB84D" stroke="white" strokeWidth="2"/>
+                <rect x="8" y="10" width="18" height="10" rx="1.5" fill="#FF6B6B" stroke="white" strokeWidth="2"/>
+                <rect x="14" y="0" width="18" height="10" rx="1.5" fill="#4ECDC4" stroke="white" strokeWidth="2"/>
               </svg>
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
