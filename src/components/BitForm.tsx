@@ -148,12 +148,15 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="context">Context (optional)</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="context">Context (optional)</Label>
+              <VoiceRecorder onTranscription={(transcribedText) => setContext(transcribedText)} />
+            </div>
             <Input
               id="context"
               value={context}
               onChange={(e) => setContext(e.target.value)}
-              placeholder="Where were you? What was happening?"
+              placeholder="Where were you? What was happening? (Type or use voice recording)"
               disabled={isLoading}
             />
           </div>
