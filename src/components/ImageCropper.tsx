@@ -15,7 +15,7 @@ interface ImageCropperProps {
 
 export const ImageCropper = ({ image, open, onClose, onCropComplete, aspectRatio = 1 }: ImageCropperProps) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(0.5);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
   const onCropChange = (location: { x: number; y: number }) => {
@@ -97,7 +97,7 @@ export const ImageCropper = ({ image, open, onClose, onCropComplete, aspectRatio
               <ZoomOut className="h-4 w-4 text-muted-foreground" />
               <Slider
                 value={[zoom]}
-                min={1}
+                min={0.5}
                 max={3}
                 step={0.1}
                 onValueChange={(values) => setZoom(values[0])}
