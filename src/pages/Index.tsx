@@ -104,8 +104,15 @@ const Index = () => {
     <div className="min-h-screen bg-background pb-20">
       {/* Top header with avatar */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <h1 className="text-xl font-bold">Bits</h1>
+        <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center shadow-lg">
+              <span className="text-2xl">✨</span>
+            </div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Bits
+            </h1>
+          </div>
           <div className="flex items-center gap-2">
             {isInstallable && (
               <Button size="icon" variant="ghost" onClick={promptInstall}>
