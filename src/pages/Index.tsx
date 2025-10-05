@@ -118,7 +118,7 @@ const Index = () => {
             </h1>
           </div>
           <div className="flex-1 text-center">
-            <p className="text-sm font-medium text-muted-foreground">Commit to the Bit</p>
+            <p className="text-sm font-medium text-muted-foreground italic">"Commit to the Bit"</p>
           </div>
           <div className="flex items-center gap-2">
             {isInstallable && (
