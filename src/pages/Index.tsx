@@ -105,7 +105,7 @@ const Index = () => {
       {/* Top header with avatar */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div className="w-14 h-10 flex items-center justify-center">
               <svg width="48" height="32" viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="2" y="20" width="18" height="10" rx="1.5" fill="#FFB84D" stroke="white" strokeWidth="2"/>
