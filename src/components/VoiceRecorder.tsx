@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface VoiceRecorderProps {
   onTranscription: (text: string) => void;
-  onStatusChange?: (status: 'idle' | 'recording' | 'processing') => void;
+  onStatusChange?: (status: 'idle' | 'recording' | 'processing' | 'success') => void;
 }
 
 export const VoiceRecorder = ({ onTranscription, onStatusChange }: VoiceRecorderProps) => {
@@ -71,11 +71,17 @@ export const VoiceRecorder = ({ onTranscription, onStatusChange }: VoiceRecorder
         if (error) throw error;
 
         if (data?.text) {
+          onStatusChange?.('success');
           onTranscription(data.text);
           toast({
             title: 'Transcription complete',
             description: 'Your voice note has been converted to text'
           });
+          
+          // Show success state briefly before returning to idle
+          setTimeout(() => {
+            onStatusChange?.('idle');
+          }, 1000);
         }
       };
     } catch (error) {
@@ -84,9 +90,9 @@ export const VoiceRecorder = ({ onTranscription, onStatusChange }: VoiceRecorder
         description: 'Failed to convert voice to text',
         variant: 'destructive'
       });
+      onStatusChange?.('idle');
     } finally {
       setIsProcessing(false);
-      onStatusChange?.('idle');
     }
   };
 

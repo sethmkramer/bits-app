@@ -44,8 +44,8 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
   const [childId, setChildId] = useState<string | undefined>(bit?.child_id ?? undefined);
   const [photo, setPhoto] = useState<File | undefined>();
   const [photoPreview, setPhotoPreview] = useState<string | undefined>(bit?.photo_url ?? undefined);
-  const [textVoiceStatus, setTextVoiceStatus] = useState<'idle' | 'recording' | 'processing'>('idle');
-  const [contextVoiceStatus, setContextVoiceStatus] = useState<'idle' | 'recording' | 'processing'>('idle');
+  const [textVoiceStatus, setTextVoiceStatus] = useState<'idle' | 'recording' | 'processing' | 'success'>('idle');
+  const [contextVoiceStatus, setContextVoiceStatus] = useState<'idle' | 'recording' | 'processing' | 'success'>('idle');
   const [isChildFormOpen, setIsChildFormOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -184,6 +184,9 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
                 {contextVoiceStatus === 'processing' && (
                   <span className="text-sm text-blue-500">Transcribing...</span>
                 )}
+                {contextVoiceStatus === 'success' && (
+                  <span className="text-sm text-green-500">✓ Done!</span>
+                )}
                 <VoiceRecorder 
                   onTranscription={(transcribedText) => setContext(transcribedText)} 
                   onStatusChange={setContextVoiceStatus}
@@ -208,6 +211,9 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
                 )}
                 {textVoiceStatus === 'processing' && (
                   <span className="text-sm text-blue-500">Transcribing...</span>
+                )}
+                {textVoiceStatus === 'success' && (
+                  <span className="text-sm text-green-500">✓ Done!</span>
                 )}
                 <VoiceRecorder 
                   onTranscription={(transcribedText) => setText(transcribedText)} 
