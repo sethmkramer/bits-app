@@ -12,7 +12,7 @@ import { BitForm } from '@/components/BitForm';
 import { BitCard } from '@/components/BitCard';
 import { BottomNav } from '@/components/BottomNav';
 import { TimelineFilters } from '@/components/TimelineFilters';
-import { LogOut, Download, Settings } from 'lucide-react';
+import { LogOut, Download, Settings, Menu } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { Bit } from '@/hooks/useBits';
 import { format, parseISO } from 'date-fns';
@@ -105,18 +105,14 @@ const Index = () => {
             )}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                      {user.email?.charAt(0).toUpperCase() || 'U'}
-                    </AvatarFallback>
-                  </Avatar>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem onClick={() => navigate('/children')}>
                   <Settings className="mr-2 h-4 w-4" />
-                  Settings
+                  Manage Children
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={signOut}>
                   <LogOut className="mr-2 h-4 w-4" />

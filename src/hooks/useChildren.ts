@@ -9,6 +9,7 @@ export interface Child {
   name: string;
   birthdate: string;
   color: string;
+  photo_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -32,13 +33,32 @@ export const useChildren = () => {
   });
 
   const createChild = useMutation({
-    mutationFn: async ({ name, birthdate, color }: { name: string; birthdate: string; color: string }) => {
+    mutationFn: async ({ name, birthdate, color, photo }: { name: string; birthdate: string; color: string; photo?: File }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      let photoUrl: string | null = null;
+
+      if (photo) {
+        const fileExt = photo.name.split('.').pop();
+        const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('child-photos')
+          .upload(filePath, photo);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('child-photos')
+          .getPublicUrl(filePath);
+
+        photoUrl = publicUrl;
+      }
+
       const { data, error } = await supabase
         .from('children')
-        .insert({ user_id: user.id, name, birthdate, color })
+        .insert({ user_id: user.id, name, birthdate, color, photo_url: photoUrl })
         .select()
         .single();
 
@@ -60,10 +80,37 @@ export const useChildren = () => {
   });
 
   const updateChild = useMutation({
-    mutationFn: async ({ id, name, birthdate, color }: { id: string; name: string; birthdate: string; color: string }) => {
+    mutationFn: async ({ id, name, birthdate, color, photo }: { id: string; name: string; birthdate: string; color: string; photo?: File }) => {
+      let photoUrl: string | undefined = undefined;
+
+      if (photo) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('Not authenticated');
+
+        const fileExt = photo.name.split('.').pop();
+        const filePath = `${user.id}/${crypto.randomUUID()}.${fileExt}`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from('child-photos')
+          .upload(filePath, photo);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('child-photos')
+          .getPublicUrl(filePath);
+
+        photoUrl = publicUrl;
+      }
+
+      const updateData: any = { name, birthdate, color };
+      if (photoUrl !== undefined) {
+        updateData.photo_url = photoUrl;
+      }
+
       const { error } = await supabase
         .from('children')
-        .update({ name, birthdate, color })
+        .update(updateData)
         .eq('id', id);
 
       if (error) throw error;

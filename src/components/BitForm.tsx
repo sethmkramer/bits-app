@@ -100,7 +100,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
     setPhotoPreview(undefined);
   };
 
-  const handleCreateChild = (data: { name: string; birthdate: string; color: string }) => {
+  const handleCreateChild = (data: { name: string; birthdate: string; color: string; photo?: File }) => {
     createChild(data, {
       onSuccess: (newChild) => {
         setChildId(newChild.id);

@@ -40,7 +40,7 @@ export default function Children() {
     setEditingChild(undefined);
   };
 
-  const handleSubmit = (data: { name: string; birthdate: string; color: string }) => {
+  const handleSubmit = (data: { name: string; birthdate: string; color: string; photo?: File }) => {
     if (editingChild) {
       updateChild({ id: editingChild.id, ...data });
     } else {
@@ -89,10 +89,14 @@ export default function Children() {
             <>
               {children.map((child) => (
                 <Card key={child.id} className="p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-                  <Avatar className="h-12 w-12" style={{ backgroundColor: `${child.color}20` }}>
-                    <AvatarFallback className="font-semibold text-lg" style={{ color: child.color }}>
-                      {child.name.charAt(0)}
-                    </AvatarFallback>
+                  <Avatar className="h-14 w-14 border-2" style={{ borderColor: child.color }}>
+                    {child.photo_url ? (
+                      <img src={child.photo_url} alt={child.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <AvatarFallback className="font-semibold text-xl" style={{ backgroundColor: `${child.color}20`, color: child.color }}>
+                        {child.name.charAt(0)}
+                      </AvatarFallback>
+                    )}
                   </Avatar>
                   
                   <div className="flex-1 min-w-0">
