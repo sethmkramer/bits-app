@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { ImageCropper } from './ImageCropper';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -44,6 +45,8 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
   const [childId, setChildId] = useState<string | undefined>(undefined);
   const [photo, setPhoto] = useState<File | undefined>();
   const [photoPreview, setPhotoPreview] = useState<string | undefined>();
+  const [tempPhotoForCrop, setTempPhotoForCrop] = useState<string | undefined>();
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
   const [textVoiceStatus, setTextVoiceStatus] = useState<'idle' | 'recording' | 'processing' | 'success'>('idle');
   const [contextVoiceStatus, setContextVoiceStatus] = useState<'idle' | 'recording' | 'processing' | 'success'>('idle');
   const [isChildFormOpen, setIsChildFormOpen] = useState(false);
@@ -74,13 +77,23 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setPhoto(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPhotoPreview(reader.result as string);
+        setTempPhotoForCrop(reader.result as string);
+        setIsCropperOpen(true);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleCropComplete = (croppedBlob: Blob) => {
+    const croppedFile = new File([croppedBlob], 'cropped-image.jpg', { type: 'image/jpeg' });
+    setPhoto(croppedFile);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(croppedFile);
   };
 
   const removePhoto = () => {
@@ -321,6 +334,22 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
         onSubmit={handleCreateChild}
         isLoading={isCreating}
       />
+      
+      {tempPhotoForCrop && (
+        <ImageCropper
+          image={tempPhotoForCrop}
+          open={isCropperOpen}
+          onClose={() => {
+            setIsCropperOpen(false);
+            setTempPhotoForCrop(undefined);
+            if (fileInputRef.current) {
+              fileInputRef.current.value = '';
+            }
+          }}
+          onCropComplete={handleCropComplete}
+          aspectRatio={4 / 3}
+        />
+      )}
     </Dialog>
   );
 };
