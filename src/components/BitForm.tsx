@@ -135,30 +135,31 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="child">Child *</Label>
-            <div className="flex gap-2">
-              <Select value={childId} onValueChange={setChildId} required>
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Select a child" />
-                </SelectTrigger>
-                <SelectContent>
-                  {children.map((child) => (
-                    <SelectItem key={child.id} value={child.id}>
-                      {child.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={() => setIsChildFormOpen(true)}
-                disabled={isLoading}
-                title="Add new child"
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
+            <Select 
+              value={childId} 
+              onValueChange={(value) => {
+                if (value === 'add-new') {
+                  setIsChildFormOpen(true);
+                } else {
+                  setChildId(value);
+                }
+              }} 
+              required
+            >
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Select a child" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="add-new" className="text-primary font-medium">
+                  + Add New Kid
+                </SelectItem>
+                {children.map((child) => (
+                  <SelectItem key={child.id} value={child.id}>
+                    {child.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
