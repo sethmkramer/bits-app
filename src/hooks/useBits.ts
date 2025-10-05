@@ -178,7 +178,6 @@ export const useBits = (filters: BitFilters = {}) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bits'] });
-      toast({ title: 'Bit updated successfully' });
     },
     onError: (error: Error) => {
       toast({
