@@ -105,7 +105,7 @@ const Index = () => {
       {/* Top header with avatar */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <h1 className="text-xl font-bold">Timeline</h1>
+          <h1 className="text-xl font-bold">Bits</h1>
           <div className="flex items-center gap-2">
             {isInstallable && (
               <Button size="icon" variant="ghost" onClick={promptInstall}>
