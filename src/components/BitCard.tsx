@@ -84,7 +84,7 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
             <img
               src={bit.photo_url}
               alt="Bit memory"
-              className="w-full h-64 sm:h-80 object-cover"
+              className="w-full object-contain"
             />
           </div>
         )}

@@ -272,7 +272,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
                 <img
                   src={photoPreview}
                   alt="Preview"
-                  className="w-full h-48 object-cover rounded-md"
+                  className="w-full object-contain rounded-md max-h-96"
                 />
                 <Button
                   type="button"
