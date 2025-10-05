@@ -24,7 +24,7 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
     <Card className="hover:shadow-lg transition-all duration-200 border-border/50 rounded-xl overflow-hidden">
       <CardContent className="p-0">
         {/* Header with child badge and menu */}
-        <div className="flex items-center justify-between px-4 pt-4 pb-2">
+        <div className="flex items-center justify-between px-4 pt-4 pb-4">
           {bit.children && (
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8 border-2" style={{ borderColor: childColor }}>
@@ -69,7 +69,7 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
         {/* Quote text */}
         <div className="px-4 pb-3">
           {bit.context && (
-            <p className="text-sm text-muted-foreground mb-3 italic">
+            <p className="text-sm text-muted-foreground mb-2 italic">
               {bit.context}
             </p>
           )}
