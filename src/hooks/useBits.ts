@@ -42,7 +42,7 @@ export const useBits = (filters: BitFilters = {}) => {
       let query = supabase
         .from('bits')
         .select('*, children(id, name, color, photo_url)', { count: 'exact' })
-        .order('created_at', { ascending: false })
+        .order('bit_date', { ascending: false })
         .range(pageParam * BITS_PER_PAGE, (pageParam + 1) * BITS_PER_PAGE - 1);
 
       if (filters.searchText) {
