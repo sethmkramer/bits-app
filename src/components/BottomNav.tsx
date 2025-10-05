@@ -23,7 +23,7 @@ export const BottomNav = ({ onAddBit }: BottomNavProps) => {
             )}
           >
             <Home className="h-6 w-6" />
-            <span className="text-xs font-medium">Timeline</span>
+            <span className="text-xs font-medium">Bits</span>
           </Button>
         </Link>
 
