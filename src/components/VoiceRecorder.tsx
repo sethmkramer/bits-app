@@ -73,10 +73,6 @@ export const VoiceRecorder = ({ onTranscription, onStatusChange }: VoiceRecorder
         if (data?.text) {
           onStatusChange?.('success');
           onTranscription(data.text);
-          toast({
-            title: 'Transcription complete',
-            description: 'Your voice note has been converted to text'
-          });
           
           // Show success state briefly before returning to idle
           setTimeout(() => {
