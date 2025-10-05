@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -38,18 +38,38 @@ interface BitFormProps {
 }
 
 export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading }: BitFormProps) => {
-  const [text, setText] = useState(bit?.text ?? '');
-  const [context, setContext] = useState(bit?.context ?? '');
-  const [bitDate, setBitDate] = useState<Date>(bit?.bit_date ? new Date(bit.bit_date) : new Date());
-  const [childId, setChildId] = useState<string | undefined>(bit?.child_id ?? undefined);
+  const [text, setText] = useState('');
+  const [context, setContext] = useState('');
+  const [bitDate, setBitDate] = useState<Date>(new Date());
+  const [childId, setChildId] = useState<string | undefined>(undefined);
   const [photo, setPhoto] = useState<File | undefined>();
-  const [photoPreview, setPhotoPreview] = useState<string | undefined>(bit?.photo_url ?? undefined);
+  const [photoPreview, setPhotoPreview] = useState<string | undefined>();
   const [textVoiceStatus, setTextVoiceStatus] = useState<'idle' | 'recording' | 'processing' | 'success'>('idle');
   const [contextVoiceStatus, setContextVoiceStatus] = useState<'idle' | 'recording' | 'processing' | 'success'>('idle');
   const [isChildFormOpen, setIsChildFormOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { createChild, isCreating } = useChildren();
+
+  // Update form when bit prop changes (for editing)
+  useEffect(() => {
+    if (bit && open) {
+      setText(bit.text);
+      setContext(bit.context || '');
+      setBitDate(bit.bit_date ? new Date(bit.bit_date) : new Date());
+      setChildId(bit.child_id || undefined);
+      setPhotoPreview(bit.photo_url || undefined);
+      setPhoto(undefined);
+    } else if (!bit && open) {
+      // Reset form for new bit
+      setText('');
+      setContext('');
+      setBitDate(new Date());
+      setChildId(undefined);
+      setPhoto(undefined);
+      setPhotoPreview(undefined);
+    }
+  }, [bit, open]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -92,12 +112,6 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
       bitDate: format(bitDate, 'yyyy-MM-dd')
     });
     onOpenChange(false);
-    setText('');
-    setContext('');
-    setBitDate(new Date());
-    setChildId(undefined);
-    setPhoto(undefined);
-    setPhotoPreview(undefined);
   };
 
   const handleCreateChild = (data: { name: string; birthdate: string; color: string; photo?: File }) => {
