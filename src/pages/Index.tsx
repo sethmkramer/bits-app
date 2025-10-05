@@ -21,7 +21,7 @@ const Index = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { children, isLoading: childrenLoading } = useChildren();
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState<{ childId?: string }>({});
   const { bits, fetchNextPage, hasNextPage, isFetchingNextPage, createBit, updateBit, deleteBit, isLoading: bitsLoading, isCreating: bitCreating, isUpdating: bitUpdating } = useBits(filters);
   const { trackEvent } = useAnalytics();
   const { isInstallable, promptInstall } = usePWAInstall();
@@ -159,6 +159,37 @@ const Index = () => {
           </div>
         </div>
       </header>
+
+      {/* Child filter selector */}
+      <div className="sticky top-16 z-30 bg-background/95 backdrop-blur border-b border-border/50">
+        <div className="max-w-2xl mx-auto px-4 py-3">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+            <button
+              onClick={() => setFilters({})}
+              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                !filters.childId 
+                  ? 'bg-primary text-primary-foreground' 
+                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+              }`}
+            >
+              All Children
+            </button>
+            {children.map((child) => (
+              <button
+                key={child.id}
+                onClick={() => setFilters({ childId: child.id })}
+                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  filters.childId === child.id
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                }`}
+              >
+                {child.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       {/* Main content */}
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
