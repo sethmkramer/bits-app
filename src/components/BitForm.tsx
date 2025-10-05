@@ -41,6 +41,8 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
   const [childId, setChildId] = useState<string | undefined>(bit?.child_id ?? undefined);
   const [photo, setPhoto] = useState<File | undefined>();
   const [photoPreview, setPhotoPreview] = useState<string | undefined>(bit?.photo_url ?? undefined);
+  const [textVoiceStatus, setTextVoiceStatus] = useState<'idle' | 'recording' | 'processing'>('idle');
+  const [contextVoiceStatus, setContextVoiceStatus] = useState<'idle' | 'recording' | 'processing'>('idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -150,21 +152,43 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="context">Context (optional)</Label>
-              <VoiceRecorder onTranscription={(transcribedText) => setContext(transcribedText)} />
+              <div className="flex items-center gap-2">
+                {contextVoiceStatus === 'recording' && (
+                  <span className="text-sm text-red-500 animate-pulse">● Listening...</span>
+                )}
+                {contextVoiceStatus === 'processing' && (
+                  <span className="text-sm text-blue-500">Transcribing...</span>
+                )}
+                <VoiceRecorder 
+                  onTranscription={(transcribedText) => setContext(transcribedText)} 
+                  onStatusChange={setContextVoiceStatus}
+                />
+              </div>
             </div>
             <Input
               id="context"
               value={context}
               onChange={(e) => setContext(e.target.value)}
               placeholder="Where were you? What was happening? (Type or use voice recording)"
-              disabled={isLoading}
+              disabled={isLoading || contextVoiceStatus !== 'idle'}
             />
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="text">Quote or Memory *</Label>
-              <VoiceRecorder onTranscription={(transcribedText) => setText(transcribedText)} />
+              <div className="flex items-center gap-2">
+                {textVoiceStatus === 'recording' && (
+                  <span className="text-sm text-red-500 animate-pulse">● Listening...</span>
+                )}
+                {textVoiceStatus === 'processing' && (
+                  <span className="text-sm text-blue-500">Transcribing...</span>
+                )}
+                <VoiceRecorder 
+                  onTranscription={(transcribedText) => setText(transcribedText)} 
+                  onStatusChange={setTextVoiceStatus}
+                />
+              </div>
             </div>
             <Textarea
               id="text"
@@ -174,7 +198,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
               rows={6}
               maxLength={5000}
               required
-              disabled={isLoading}
+              disabled={isLoading || textVoiceStatus !== 'idle'}
               className="resize-none"
             />
             <p className="text-xs text-muted-foreground text-right">

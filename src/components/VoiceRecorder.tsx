@@ -6,9 +6,10 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface VoiceRecorderProps {
   onTranscription: (text: string) => void;
+  onStatusChange?: (status: 'idle' | 'recording' | 'processing') => void;
 }
 
-export const VoiceRecorder = ({ onTranscription }: VoiceRecorderProps) => {
+export const VoiceRecorder = ({ onTranscription, onStatusChange }: VoiceRecorderProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -36,6 +37,7 @@ export const VoiceRecorder = ({ onTranscription }: VoiceRecorderProps) => {
 
       mediaRecorder.start();
       setIsRecording(true);
+      onStatusChange?.('recording');
     } catch (error) {
       toast({
         title: 'Microphone access denied',
@@ -49,11 +51,13 @@ export const VoiceRecorder = ({ onTranscription }: VoiceRecorderProps) => {
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      onStatusChange?.('processing');
     }
   };
 
   const transcribeAudio = async (audioBlob: Blob) => {
     setIsProcessing(true);
+    onStatusChange?.('processing');
     try {
       const reader = new FileReader();
       reader.readAsDataURL(audioBlob);
@@ -82,6 +86,7 @@ export const VoiceRecorder = ({ onTranscription }: VoiceRecorderProps) => {
       });
     } finally {
       setIsProcessing(false);
+      onStatusChange?.('idle');
     }
   };
 
