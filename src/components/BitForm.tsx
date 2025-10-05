@@ -7,17 +7,20 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Camera, X, CalendarIcon } from 'lucide-react';
+import { Camera, X, CalendarIcon, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { VoiceRecorder } from './VoiceRecorder';
+import { ChildForm } from './ChildForm';
+import { useChildren } from '@/hooks/useChildren';
 import type { Bit } from '@/hooks/useBits';
 import type { Child } from '@/hooks/useChildren';
 
 const bitSchema = z.object({
   text: z.string().trim().min(1, 'Text is required').max(5000, 'Text too long (max 5000 characters)'),
+  childId: z.string().min(1, 'Please select a child'),
   photo: z.instanceof(File).optional().refine((file) => {
     if (!file) return true;
     const validTypes = ['image/jpeg', 'image/png'];
@@ -43,8 +46,10 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
   const [photoPreview, setPhotoPreview] = useState<string | undefined>(bit?.photo_url ?? undefined);
   const [textVoiceStatus, setTextVoiceStatus] = useState<'idle' | 'recording' | 'processing'>('idle');
   const [contextVoiceStatus, setContextVoiceStatus] = useState<'idle' | 'recording' | 'processing'>('idle');
+  const [isChildFormOpen, setIsChildFormOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
+  const { createChild, isCreating } = useChildren();
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -69,7 +74,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = bitSchema.safeParse({ text, photo });
+    const result = bitSchema.safeParse({ text, photo, childId });
     if (!result.success) {
       toast({
         title: 'Validation error',
@@ -95,6 +100,15 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
     setPhotoPreview(undefined);
   };
 
+  const handleCreateChild = (data: { name: string; birthdate: string }) => {
+    createChild(data, {
+      onSuccess: (newChild) => {
+        setChildId(newChild.id);
+        setIsChildFormOpen(false);
+      }
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl">
@@ -106,20 +120,31 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="child">Child</Label>
-            <Select value={childId} onValueChange={setChildId}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a child (optional)" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">No child selected</SelectItem>
-                {children.map((child) => (
-                  <SelectItem key={child.id} value={child.id}>
-                    {child.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="child">Child *</Label>
+            <div className="flex gap-2">
+              <Select value={childId} onValueChange={setChildId} required>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Select a child" />
+                </SelectTrigger>
+                <SelectContent>
+                  {children.map((child) => (
+                    <SelectItem key={child.id} value={child.id}>
+                      {child.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setIsChildFormOpen(true)}
+                disabled={isLoading}
+                title="Add new child"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -259,6 +284,13 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
           </div>
         </form>
       </DialogContent>
+      
+      <ChildForm
+        open={isChildFormOpen}
+        onOpenChange={setIsChildFormOpen}
+        onSubmit={handleCreateChild}
+        isLoading={isCreating}
+      />
     </Dialog>
   );
 };
