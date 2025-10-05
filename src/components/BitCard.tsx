@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import type { Bit } from '@/hooks/useBits';
@@ -25,12 +26,23 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
         {/* Header with child badge and menu */}
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
           {bit.children && (
-            <Badge 
-              className="font-medium px-3 py-1 rounded-full text-white" 
-              style={{ backgroundColor: childColor }}
-            >
-              {bit.children.name}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Avatar className="h-8 w-8 border-2" style={{ borderColor: childColor }}>
+                {bit.children.photo_url ? (
+                  <img src={bit.children.photo_url} alt={bit.children.name} className="w-full h-full object-cover" />
+                ) : (
+                  <AvatarFallback className="text-sm font-semibold" style={{ backgroundColor: `${childColor}20`, color: childColor }}>
+                    {bit.children.name.charAt(0)}
+                  </AvatarFallback>
+                )}
+              </Avatar>
+              <Badge 
+                className="font-medium px-3 py-1 rounded-full text-white" 
+                style={{ backgroundColor: childColor }}
+              >
+                {bit.children.name}
+              </Badge>
+            </div>
           )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
