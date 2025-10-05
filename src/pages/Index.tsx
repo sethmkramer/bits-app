@@ -50,7 +50,7 @@ const Index = () => {
     createChild(data);
   };
 
-  const handleCreateBit = (data: { text: string; childId?: string; photo?: File }) => {
+  const handleCreateBit = (data: { text: string; childId?: string; photo?: File; context?: string; bitDate?: string }) => {
     if (editingBit) {
       updateBit({ id: editingBit.id, ...data });
       setEditingBit(undefined);
