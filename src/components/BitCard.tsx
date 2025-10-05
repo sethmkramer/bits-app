@@ -32,7 +32,7 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
                   <img src={bit.children.photo_url} alt={bit.children.name} className="w-full h-full object-cover" />
                 ) : (
                   <AvatarFallback className="text-sm font-semibold text-white" style={{ backgroundColor: childColor }}>
-                    {bit.children.name.charAt(0)}
+                    {bit.children.name.split(' ').map(n => n.charAt(0)).filter((_, i) => i < 2).join('')}
                   </AvatarFallback>
                 )}
               </Avatar>

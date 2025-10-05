@@ -94,7 +94,7 @@ export default function Children() {
                       <img src={child.photo_url} alt={child.name} className="w-full h-full object-cover" />
                     ) : (
                       <AvatarFallback className="font-semibold text-xl text-white" style={{ backgroundColor: child.color }}>
-                        {child.name.charAt(0)}
+                        {child.name.split(' ').map(n => n.charAt(0)).filter((_, i) => i < 2).join('')}
                       </AvatarFallback>
                     )}
                   </Avatar>
