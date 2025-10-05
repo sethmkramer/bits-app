@@ -104,8 +104,8 @@ const Index = () => {
     <div className="min-h-screen bg-background pb-20">
       {/* Tagline banner */}
       <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border-b border-primary/20">
-        <div className="max-w-2xl mx-auto px-4 py-2 text-center">
-          <p className="text-sm font-medium text-primary italic">— "Commit to the Bit"</p>
+        <div className="max-w-2xl mx-auto px-4 py-3 text-center">
+          <p className="text-base font-semibold text-primary tracking-wide">Commit to the Bit</p>
         </div>
       </div>
 
