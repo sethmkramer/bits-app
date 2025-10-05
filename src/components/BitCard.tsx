@@ -80,11 +80,11 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
 
         {/* Photo */}
         {bit.photo_url && (
-          <div className="px-4 pb-3">
+          <div className="px-4 pb-3 flex">
             <img
               src={bit.photo_url}
               alt="Bit memory"
-              className="rounded-3xl max-h-80 w-auto"
+              className="rounded-3xl max-h-80 max-w-full h-auto"
             />
           </div>
         )}
