@@ -2,11 +2,17 @@ import { useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Camera, X } from 'lucide-react';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Camera, X, CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+import { VoiceRecorder } from './VoiceRecorder';
 import type { Bit } from '@/hooks/useBits';
 import type { Child } from '@/hooks/useChildren';
 
@@ -22,7 +28,7 @@ const bitSchema = z.object({
 interface BitFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: { text: string; childId?: string; photo?: File }) => void;
+  onSubmit: (data: { text: string; childId?: string; photo?: File; context?: string; bitDate?: string }) => void;
   bit?: Bit;
   children: Child[];
   isLoading?: boolean;
@@ -30,6 +36,8 @@ interface BitFormProps {
 
 export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading }: BitFormProps) => {
   const [text, setText] = useState(bit?.text ?? '');
+  const [context, setContext] = useState(bit?.context ?? '');
+  const [bitDate, setBitDate] = useState<Date>(bit?.bit_date ? new Date(bit.bit_date) : new Date());
   const [childId, setChildId] = useState<string | undefined>(bit?.child_id ?? undefined);
   const [photo, setPhoto] = useState<File | undefined>();
   const [photoPreview, setPhotoPreview] = useState<string | undefined>(bit?.photo_url ?? undefined);
@@ -69,9 +77,17 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
       return;
     }
 
-    onSubmit({ text, childId, photo });
+    onSubmit({ 
+      text, 
+      childId, 
+      photo, 
+      context: context || undefined,
+      bitDate: format(bitDate, 'yyyy-MM-dd')
+    });
     onOpenChange(false);
     setText('');
+    setContext('');
+    setBitDate(new Date());
     setChildId(undefined);
     setPhoto(undefined);
     setPhotoPreview(undefined);
@@ -105,12 +121,53 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="text">Quote or Memory *</Label>
+            <Label htmlFor="bitDate">Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !bitDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {bitDate ? format(bitDate, 'PPP') : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={bitDate}
+                  onSelect={(date) => date && setBitDate(date)}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="context">Context (optional)</Label>
+            <Input
+              id="context"
+              value={context}
+              onChange={(e) => setContext(e.target.value)}
+              placeholder="Where were you? What was happening?"
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="text">Quote or Memory *</Label>
+              <VoiceRecorder onTranscription={(transcribedText) => setText(transcribedText)} />
+            </div>
             <Textarea
               id="text"
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder="What did they say or do?"
+              placeholder="What did they say or do? (Type or use voice recording)"
               rows={6}
               maxLength={5000}
               required

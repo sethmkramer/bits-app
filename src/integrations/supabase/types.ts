@@ -16,7 +16,9 @@ export type Database = {
     Tables: {
       bits: {
         Row: {
+          bit_date: string
           child_id: string | null
+          context: string | null
           created_at: string
           id: string
           photo_url: string | null
@@ -25,7 +27,9 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          bit_date?: string
           child_id?: string | null
+          context?: string | null
           created_at?: string
           id?: string
           photo_url?: string | null
@@ -34,7 +38,9 @@ export type Database = {
           user_id: string
         }
         Update: {
+          bit_date?: string
           child_id?: string | null
+          context?: string | null
           created_at?: string
           id?: string
           photo_url?: string | null
