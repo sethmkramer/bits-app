@@ -6,6 +6,22 @@ import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import type { Bit } from '@/hooks/useBits';
 import { format, formatDistanceToNow } from 'date-fns';
 
+// Generate consistent color for each child from electric blue palette
+const getChildColor = (childId: string) => {
+  const colors = [
+    'hsl(211, 100%, 50%)',  // Electric blue
+    'hsl(195, 100%, 45%)',  // Cyan blue
+    'hsl(230, 85%, 55%)',   // Royal blue
+    'hsl(180, 90%, 40%)',   // Teal
+    'hsl(200, 95%, 48%)',   // Sky blue
+    'hsl(220, 80%, 52%)',   // Deep blue
+  ];
+  
+  // Use child ID to consistently select a color
+  const hash = childId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return colors[hash % colors.length];
+};
+
 interface BitCardProps {
   bit: Bit;
   onEdit: (bit: Bit) => void;
@@ -17,13 +33,18 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
     return formatDistanceToNow(new Date(dateString), { addSuffix: true });
   };
 
+  const childColor = bit.children ? getChildColor(bit.children.id) : 'hsl(211, 100%, 50%)';
+  
   return (
     <Card className="hover:shadow-lg transition-all duration-200 border-border/50 rounded-xl overflow-hidden">
       <CardContent className="p-0">
         {/* Header with child badge and menu */}
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
           {bit.children && (
-            <Badge className="bg-primary text-primary-foreground font-medium px-3 py-1 rounded-full">
+            <Badge 
+              className="font-medium px-3 py-1 rounded-full text-white" 
+              style={{ backgroundColor: childColor }}
+            >
               {bit.children.name}
             </Badge>
           )}
@@ -51,7 +72,7 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
 
         {/* Quote text */}
         <div className="px-4 pb-3">
-          <p className="font-quote text-base sm:text-lg leading-relaxed text-foreground whitespace-pre-wrap break-words">
+          <p className="text-base sm:text-lg leading-relaxed text-foreground whitespace-pre-wrap break-words">
             {bit.text}
           </p>
           {bit.context && (
