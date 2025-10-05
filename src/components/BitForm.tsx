@@ -111,11 +111,11 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl">
         <DialogHeader>
-          <DialogTitle>{bit ? 'Edit Bit' : 'Create New Bit'}</DialogTitle>
+          <DialogTitle className="text-xl">{bit ? 'Edit Bit' : 'Create New Bit'}</DialogTitle>
           <DialogDescription>
-            {bit ? 'Update your memorable moment' : 'Capture a memorable quote or moment from your child'}
+            {bit ? 'Update this memorable moment' : 'Capture a special moment'}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -230,7 +230,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
               maxLength={5000}
               required
               disabled={isLoading || textVoiceStatus !== 'idle'}
-              className="resize-none"
+              className="resize-none font-quote text-base"
             />
             <p className="text-xs text-muted-foreground text-right">
               {text.length} / 5000 characters
@@ -280,12 +280,21 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
             </p>
           </div>
 
-          <div className="flex gap-2 justify-end pt-4">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
+          <div className="flex gap-3 justify-end pt-4 border-t">
+            <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={() => onOpenChange(false)} 
+              disabled={isLoading}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Saving...' : (bit ? 'Update' : 'Create')}
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="min-w-24"
+            >
+              {isLoading ? 'Saving...' : (bit ? 'Update' : 'Save')}
             </Button>
           </div>
         </form>

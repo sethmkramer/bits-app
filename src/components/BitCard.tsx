@@ -1,9 +1,10 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import type { Bit } from '@/hooks/useBits';
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 
 interface BitCardProps {
   bit: Bit;
@@ -13,41 +14,33 @@ interface BitCardProps {
 
 export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
   const formatDate = (dateString: string) => {
-    return format(new Date(dateString), 'MMM d, yyyy');
-  };
-
-  const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return formatDistanceToNow(new Date(dateString), { addSuffix: true });
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-4 space-y-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
-            {bit.children && (
-              <div className="inline-flex items-center px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-2">
-                {bit.children.name}
-              </div>
-            )}
-            <p className="text-sm text-foreground whitespace-pre-wrap break-words">
-              {truncateText(bit.text, 200)}
-            </p>
-          </div>
+    <Card className="hover:shadow-lg transition-all duration-200 border-border/50 rounded-xl overflow-hidden">
+      <CardContent className="p-0">
+        {/* Header with child badge and menu */}
+        <div className="flex items-center justify-between px-4 pt-4 pb-2">
+          {bit.children && (
+            <Badge className="bg-primary text-primary-foreground font-medium px-3 py-1 rounded-full">
+              {bit.children.name}
+            </Badge>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
+              <Button variant="ghost" size="icon" className="h-8 w-8 ml-auto">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuItem onClick={() => onEdit(bit)}>
                 <Pencil className="mr-2 h-4 w-4" />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => onDelete(bit.id)}
-                className="text-destructive"
+                className="text-destructive focus:text-destructive"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete
@@ -56,17 +49,33 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
           </DropdownMenu>
         </div>
 
+        {/* Quote text */}
+        <div className="px-4 pb-3">
+          <p className="font-quote text-base sm:text-lg leading-relaxed text-foreground whitespace-pre-wrap break-words">
+            {bit.text}
+          </p>
+          {bit.context && (
+            <p className="text-sm text-muted-foreground mt-2 italic">
+              {bit.context}
+            </p>
+          )}
+        </div>
+
+        {/* Photo */}
         {bit.photo_url && (
-          <img
-            src={bit.photo_url}
-            alt="Bit photo"
-            className="w-full h-48 object-cover rounded-md"
-          />
+          <div className="w-full">
+            <img
+              src={bit.photo_url}
+              alt="Bit memory"
+              className="w-full h-64 sm:h-80 object-cover"
+            />
+          </div>
         )}
 
-        <p className="text-xs text-muted-foreground">
-          {formatDate(bit.created_at)}
-        </p>
+        {/* Timestamp */}
+        <div className="px-4 py-3 text-xs text-muted-foreground">
+          {formatDate(bit.bit_date || bit.created_at)}
+        </div>
       </CardContent>
     </Card>
   );

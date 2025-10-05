@@ -49,11 +49,11 @@ export const ChildForm = ({ open, onOpenChange, onSubmit, child, isLoading }: Ch
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="rounded-2xl">
         <DialogHeader>
-          <DialogTitle>{child ? 'Edit Child' : 'Add Child'}</DialogTitle>
+          <DialogTitle className="text-xl">{child ? 'Edit Child' : 'Add Child'}</DialogTitle>
           <DialogDescription>
-            {child ? 'Update your child\'s information' : 'Add a new child to your Bits collection'}
+            {child ? 'Update your child\'s information' : 'Add a child to start capturing moments'}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -81,11 +81,20 @@ export const ChildForm = ({ open, onOpenChange, onSubmit, child, isLoading }: Ch
               disabled={isLoading}
             />
           </div>
-          <div className="flex gap-2 justify-end">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isLoading}>
+          <div className="flex gap-3 justify-end pt-4 border-t">
+            <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={() => onOpenChange(false)} 
+              disabled={isLoading}
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="min-w-24"
+            >
               {isLoading ? 'Saving...' : (child ? 'Update' : 'Add')}
             </Button>
           </div>

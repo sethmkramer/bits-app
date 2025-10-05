@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useChildren } from '@/hooks/useChildren';
@@ -6,24 +6,26 @@ import { useBits } from '@/hooks/useBits';
 import { useAnalytics } from '@/hooks/useAnalytics';
 import { usePWAInstall } from '@/hooks/usePWAInstall';
 import { Button } from '@/components/ui/button';
-import { ChildForm } from '@/components/ChildForm';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { BitForm } from '@/components/BitForm';
 import { BitCard } from '@/components/BitCard';
+import { BottomNav } from '@/components/BottomNav';
 import { TimelineFilters } from '@/components/TimelineFilters';
-import { Plus, Users, LogOut, Download } from 'lucide-react';
+import { LogOut, Download, Settings } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { Bit } from '@/hooks/useBits';
+import { format, parseISO } from 'date-fns';
 
 const Index = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const { children, createChild, isLoading: childrenLoading, isCreating } = useChildren();
+  const { children, isLoading: childrenLoading } = useChildren();
   const [filters, setFilters] = useState({});
   const { bits, fetchNextPage, hasNextPage, isFetchingNextPage, createBit, updateBit, deleteBit, isLoading: bitsLoading, isCreating: bitCreating, isUpdating: bitUpdating } = useBits(filters);
   const { trackEvent } = useAnalytics();
   const { isInstallable, promptInstall } = usePWAInstall();
 
-  const [showChildForm, setShowChildForm] = useState(false);
   const [showBitForm, setShowBitForm] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [editingBit, setEditingBit] = useState<Bit | undefined>();
@@ -46,9 +48,18 @@ const Index = () => {
     }
   }, [user, trackEvent]);
 
-  const handleCreateChild = (data: { name: string; birthdate: string }) => {
-    createChild(data);
-  };
+  // Group bits by month
+  const bitsByMonth = useMemo(() => {
+    const grouped: { [key: string]: Bit[] } = {};
+    bits.forEach((bit) => {
+      const monthKey = format(parseISO(bit.bit_date || bit.created_at), 'MMMM yyyy');
+      if (!grouped[monthKey]) {
+        grouped[monthKey] = [];
+      }
+      grouped[monthKey].push(bit);
+    });
+    return grouped;
+  }, [bits]);
 
   const handleCreateBit = (data: { text: string; childId?: string; photo?: File; context?: string; bitDate?: string }) => {
     if (editingBit) {
@@ -64,9 +75,17 @@ const Index = () => {
     setShowBitForm(true);
   };
 
+  const handleAddBit = () => {
+    if (children.length === 0) {
+      setShowOnboarding(true);
+    } else {
+      setShowBitForm(true);
+    }
+  };
+
   if (authLoading || !user) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-background">
         <p className="text-muted-foreground">Loading...</p>
       </div>
     );
@@ -74,83 +93,104 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <header className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-primary">Bits</h1>
-            <div className="flex items-center gap-2">
-              {isInstallable && (
-                <Button size="icon" variant="outline" onClick={promptInstall}>
-                  <Download className="h-5 w-5" />
+      {/* Top header with avatar */}
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+          <h1 className="text-xl font-bold">Timeline</h1>
+          <div className="flex items-center gap-2">
+            {isInstallable && (
+              <Button size="icon" variant="ghost" onClick={promptInstall}>
+                <Download className="h-5 w-5" />
+              </Button>
+            )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                      {user.email?.charAt(0).toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
                 </Button>
-              )}
-              <Button size="icon" variant="outline" onClick={() => setShowChildForm(true)}>
-                <Users className="h-5 w-5" />
-              </Button>
-              <Button size="icon" variant="outline" onClick={signOut}>
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => navigate('/children')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={signOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-6 max-w-2xl space-y-6">
+      {/* Main content */}
+      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         <TimelineFilters children={children} onFilterChange={setFilters} />
 
-        <div className="space-y-4">
-          {bitsLoading ? (
-            <p className="text-center text-muted-foreground py-8">Loading bits...</p>
-          ) : bits.length === 0 ? (
-            <div className="text-center py-12 space-y-4">
-              <p className="text-muted-foreground">No bits yet. Start capturing moments!</p>
-              <Button onClick={() => setShowBitForm(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Create Your First Bit
+        {bitsLoading ? (
+          <p className="text-center text-muted-foreground py-12">Loading...</p>
+        ) : bits.length === 0 ? (
+          <div className="text-center py-16 space-y-4">
+            <p className="text-lg text-muted-foreground max-w-md mx-auto">
+              No Bits yet. Add your first Bit to start the memory lane.
+            </p>
+            <Button onClick={handleAddBit} size="lg" className="mt-4">
+              Create Your First Bit
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {Object.entries(bitsByMonth).map(([month, monthBits]) => (
+              <div key={month} className="space-y-4">
+                {/* Month divider */}
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-primary/20"></div>
+                  </div>
+                  <div className="relative flex justify-center">
+                    <span className="bg-primary text-primary-foreground px-4 py-1 text-sm font-medium rounded-full">
+                      {month}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Bits for this month */}
+                <div className="space-y-4">
+                  {monthBits.map((bit) => (
+                    <BitCard
+                      key={bit.id}
+                      bit={bit}
+                      onEdit={handleEditBit}
+                      onDelete={deleteBit}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {hasNextPage && (
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+              >
+                {isFetchingNextPage ? 'Loading...' : 'Load More'}
               </Button>
-            </div>
-          ) : (
-            <>
-              {bits.map((bit) => (
-                <BitCard
-                  key={bit.id}
-                  bit={bit}
-                  onEdit={handleEditBit}
-                  onDelete={deleteBit}
-                />
-              ))}
-              {hasNextPage && (
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => fetchNextPage()}
-                  disabled={isFetchingNextPage}
-                >
-                  {isFetchingNextPage ? 'Loading...' : 'Load More'}
-                </Button>
-              )}
-            </>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </main>
 
-      <div className="fixed bottom-6 right-6">
-        <Button
-          size="lg"
-          className="h-14 w-14 rounded-full shadow-lg"
-          onClick={() => setShowBitForm(true)}
-        >
-          <Plus className="h-6 w-6" />
-        </Button>
-      </div>
+      {/* Bottom navigation */}
+      <BottomNav onAddBit={handleAddBit} />
 
-      <ChildForm
-        open={showChildForm}
-        onOpenChange={setShowChildForm}
-        onSubmit={handleCreateChild}
-        isLoading={isCreating}
-      />
-
+      {/* Forms and dialogs */}
       <BitForm
         open={showBitForm}
         onOpenChange={(open) => {
@@ -168,18 +208,17 @@ const Index = () => {
           <DialogHeader>
             <DialogTitle>Welcome to Bits!</DialogTitle>
             <DialogDescription>
-              Let's start by adding your first child so you can begin capturing their memorable moments.
+              To start capturing moments, you'll need to add a child first.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 pt-4">
+          <div className="space-y-3 pt-4">
             <Button
               className="w-full"
               onClick={() => {
                 setShowOnboarding(false);
-                setShowChildForm(true);
+                navigate('/children');
               }}
             >
-              <Users className="mr-2 h-4 w-4" />
               Add Your First Child
             </Button>
             <Button
