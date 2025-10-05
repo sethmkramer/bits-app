@@ -7,18 +7,28 @@ import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import type { Child } from '@/hooks/useChildren';
 
+const CHILD_COLORS = [
+  { name: 'Electric Blue', value: 'hsl(211, 100%, 50%)' },
+  { name: 'Cyan', value: 'hsl(195, 100%, 45%)' },
+  { name: 'Royal Blue', value: 'hsl(230, 85%, 55%)' },
+  { name: 'Teal', value: 'hsl(180, 90%, 40%)' },
+  { name: 'Sky Blue', value: 'hsl(200, 95%, 48%)' },
+  { name: 'Deep Blue', value: 'hsl(220, 80%, 52%)' },
+];
+
 const childSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100, 'Name too long'),
   birthdate: z.string().refine((date) => {
     const d = new Date(date);
     return d < new Date() && d > new Date('1900-01-01');
-  }, 'Please enter a valid birthdate')
+  }, 'Please enter a valid birthdate'),
+  color: z.string().min(1, 'Please select a color'),
 });
 
 interface ChildFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: { name: string; birthdate: string }) => void;
+  onSubmit: (data: { name: string; birthdate: string; color: string }) => void;
   child?: Child;
   isLoading?: boolean;
 }
@@ -26,12 +36,13 @@ interface ChildFormProps {
 export const ChildForm = ({ open, onOpenChange, onSubmit, child, isLoading }: ChildFormProps) => {
   const [name, setName] = useState(child?.name ?? '');
   const [birthdate, setBirthdate] = useState(child?.birthdate ?? '');
+  const [color, setColor] = useState(child?.color ?? CHILD_COLORS[0].value);
   const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = childSchema.safeParse({ name, birthdate });
+    const result = childSchema.safeParse({ name, birthdate, color });
     if (!result.success) {
       toast({
         title: 'Validation error',
@@ -41,10 +52,11 @@ export const ChildForm = ({ open, onOpenChange, onSubmit, child, isLoading }: Ch
       return;
     }
 
-    onSubmit({ name, birthdate });
+    onSubmit({ name, birthdate, color });
     onOpenChange(false);
     setName('');
     setBirthdate('');
+    setColor(CHILD_COLORS[0].value);
   };
 
   return (
@@ -80,6 +92,31 @@ export const ChildForm = ({ open, onOpenChange, onSubmit, child, isLoading }: Ch
               required
               disabled={isLoading}
             />
+          </div>
+          <div className="space-y-2">
+            <Label>Color *</Label>
+            <div className="grid grid-cols-6 gap-3">
+              {CHILD_COLORS.map((colorOption) => (
+                <button
+                  key={colorOption.value}
+                  type="button"
+                  onClick={() => setColor(colorOption.value)}
+                  className="relative h-12 w-12 rounded-full transition-all hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                  style={{ 
+                    backgroundColor: colorOption.value,
+                    boxShadow: color === colorOption.value ? `0 0 0 3px white, 0 0 0 5px ${colorOption.value}` : 'none'
+                  }}
+                  disabled={isLoading}
+                  title={colorOption.name}
+                >
+                  {color === colorOption.value && (
+                    <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-lg">
+                      ✓
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex gap-3 justify-end pt-4 border-t">
             <Button 

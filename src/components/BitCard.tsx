@@ -6,22 +6,6 @@ import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
 import type { Bit } from '@/hooks/useBits';
 import { format, formatDistanceToNow } from 'date-fns';
 
-// Generate consistent color for each child from electric blue palette
-const getChildColor = (childId: string) => {
-  const colors = [
-    'hsl(211, 100%, 50%)',  // Electric blue
-    'hsl(195, 100%, 45%)',  // Cyan blue
-    'hsl(230, 85%, 55%)',   // Royal blue
-    'hsl(180, 90%, 40%)',   // Teal
-    'hsl(200, 95%, 48%)',   // Sky blue
-    'hsl(220, 80%, 52%)',   // Deep blue
-  ];
-  
-  // Use child ID to consistently select a color
-  const hash = childId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return colors[hash % colors.length];
-};
-
 interface BitCardProps {
   bit: Bit;
   onEdit: (bit: Bit) => void;
@@ -33,7 +17,7 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
     return formatDistanceToNow(new Date(dateString), { addSuffix: true });
   };
 
-  const childColor = bit.children ? getChildColor(bit.children.id) : 'hsl(211, 100%, 50%)';
+  const childColor = bit.children?.color || 'hsl(211, 100%, 50%)';
   
   return (
     <Card className="hover:shadow-lg transition-all duration-200 border-border/50 rounded-xl overflow-hidden">

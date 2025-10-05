@@ -19,21 +19,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Link } from 'react-router-dom';
 
-// Generate consistent color for each child from electric blue palette
-const getChildColor = (childId: string) => {
-  const colors = [
-    'hsl(211, 100%, 50%)',  // Electric blue
-    'hsl(195, 100%, 45%)',  // Cyan blue
-    'hsl(230, 85%, 55%)',   // Royal blue
-    'hsl(180, 90%, 40%)',   // Teal
-    'hsl(200, 95%, 48%)',   // Sky blue
-    'hsl(220, 80%, 52%)',   // Deep blue
-  ];
-  
-  const hash = childId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return colors[hash % colors.length];
-};
-
 export default function Children() {
   const { user } = useAuth();
   const { children, createChild, updateChild, deleteChild, isLoading, isCreating, isUpdating, isDeleting } = useChildren();
@@ -55,7 +40,7 @@ export default function Children() {
     setEditingChild(undefined);
   };
 
-  const handleSubmit = (data: { name: string; birthdate: string }) => {
+  const handleSubmit = (data: { name: string; birthdate: string; color: string }) => {
     if (editingChild) {
       updateChild({ id: editingChild.id, ...data });
     } else {
@@ -102,19 +87,17 @@ export default function Children() {
             </div>
           ) : (
             <>
-              {children.map((child) => {
-                const childColor = getChildColor(child.id);
-                return (
+              {children.map((child) => (
                 <Card key={child.id} className="p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-                  <Avatar className="h-12 w-12" style={{ backgroundColor: `${childColor}20` }}>
-                    <AvatarFallback className="font-semibold text-lg" style={{ color: childColor }}>
+                  <Avatar className="h-12 w-12" style={{ backgroundColor: `${child.color}20` }}>
+                    <AvatarFallback className="font-semibold text-lg" style={{ color: child.color }}>
                       {child.name.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
                   
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-lg truncate">{child.name}</h3>
-                    <p className="text-sm font-medium" style={{ color: childColor }}>
+                    <p className="text-sm font-medium" style={{ color: child.color }}>
                       Age {calculateAge(child.birthdate)}
                     </p>
                   </div>
@@ -138,8 +121,7 @@ export default function Children() {
                     </Button>
                   </div>
                 </Card>
-              );
-              })}
+              ))}
 
               <Button
                 onClick={() => setIsFormOpen(true)}

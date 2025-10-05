@@ -16,6 +16,7 @@ export interface Bit {
   children?: {
     id: string;
     name: string;
+    color: string;
   } | null;
 }
 
@@ -39,7 +40,7 @@ export const useBits = (filters: BitFilters = {}) => {
     queryFn: async ({ pageParam = 0 }) => {
       let query = supabase
         .from('bits')
-        .select('*, children(id, name)', { count: 'exact' })
+        .select('*, children(id, name, color)', { count: 'exact' })
         .order('created_at', { ascending: false })
         .range(pageParam * BITS_PER_PAGE, (pageParam + 1) * BITS_PER_PAGE - 1);
 
@@ -112,7 +113,7 @@ export const useBits = (filters: BitFilters = {}) => {
           context: context || null,
           bit_date: bitDate || new Date().toISOString().split('T')[0]
         })
-        .select('*, children(id, name)')
+        .select('*, children(id, name, color)')
         .single();
 
       if (error) throw error;

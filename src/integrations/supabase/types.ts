@@ -61,6 +61,7 @@ export type Database = {
       children: {
         Row: {
           birthdate: string
+          color: string | null
           created_at: string
           id: string
           name: string
@@ -69,6 +70,7 @@ export type Database = {
         }
         Insert: {
           birthdate: string
+          color?: string | null
           created_at?: string
           id?: string
           name: string
@@ -77,6 +79,7 @@ export type Database = {
         }
         Update: {
           birthdate?: string
+          color?: string | null
           created_at?: string
           id?: string
           name?: string

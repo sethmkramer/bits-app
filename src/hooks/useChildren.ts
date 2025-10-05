@@ -8,6 +8,7 @@ export interface Child {
   user_id: string;
   name: string;
   birthdate: string;
+  color: string;
   created_at: string;
   updated_at: string;
 }
@@ -31,13 +32,13 @@ export const useChildren = () => {
   });
 
   const createChild = useMutation({
-    mutationFn: async ({ name, birthdate }: { name: string; birthdate: string }) => {
+    mutationFn: async ({ name, birthdate, color }: { name: string; birthdate: string; color: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
       const { data, error } = await supabase
         .from('children')
-        .insert({ user_id: user.id, name, birthdate })
+        .insert({ user_id: user.id, name, birthdate, color })
         .select()
         .single();
 
@@ -59,10 +60,10 @@ export const useChildren = () => {
   });
 
   const updateChild = useMutation({
-    mutationFn: async ({ id, name, birthdate }: { id: string; name: string; birthdate: string }) => {
+    mutationFn: async ({ id, name, birthdate, color }: { id: string; name: string; birthdate: string; color: string }) => {
       const { error } = await supabase
         .from('children')
-        .update({ name, birthdate })
+        .update({ name, birthdate, color })
         .eq('id', id);
 
       if (error) throw error;
