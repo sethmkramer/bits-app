@@ -245,7 +245,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
               maxLength={5000}
               required
               disabled={isLoading || textVoiceStatus !== 'idle'}
-              className="resize-none font-quote text-base"
+              className="resize-none"
             />
             <p className="text-xs text-muted-foreground text-right">
               {text.length} / 5000 characters
