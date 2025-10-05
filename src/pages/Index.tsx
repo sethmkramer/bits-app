@@ -103,9 +103,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Tagline banner */}
-      <div className="bg-gradient-to-r from-primary/20 via-primary/30 to-primary/20 border-b border-border">
+      <div className="bg-gradient-to-r from-primary via-primary/90 to-primary border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-3 text-center">
-          <p className="text-base font-semibold text-foreground/80 tracking-wide">
+          <p className="text-base font-semibold text-primary-foreground tracking-wide">
             Commit to the Bit
           </p>
         </div>
