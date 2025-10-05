@@ -102,13 +102,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Tagline banner */}
-      <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border-b border-primary/20">
-        <div className="max-w-2xl mx-auto px-4 py-2 text-center">
-          <p className="text-sm font-medium text-primary">Commit to the Bit</p>
-        </div>
-      </div>
-
       {/* Top header with avatar */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between">
@@ -123,6 +116,9 @@ const Index = () => {
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
               Bits
             </h1>
+          </div>
+          <div className="flex-1 text-center">
+            <p className="text-sm font-medium text-muted-foreground">Commit to the Bit</p>
           </div>
           <div className="flex items-center gap-2">
             {isInstallable && (
