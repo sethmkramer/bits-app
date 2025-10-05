@@ -15,7 +15,7 @@ interface ImageCropperProps {
 
 export const ImageCropper = ({ image, open, onClose, onCropComplete, aspectRatio = 1 }: ImageCropperProps) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(0.5);
+  const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
   const onCropChange = (location: { x: number; y: number }) => {
