@@ -68,14 +68,14 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
 
         {/* Quote text */}
         <div className="px-4 pb-3">
-          <p className="text-base sm:text-lg leading-relaxed text-foreground whitespace-pre-wrap break-words">
-            {bit.text}
-          </p>
           {bit.context && (
-            <p className="text-sm text-muted-foreground mt-2 italic">
+            <p className="text-sm text-muted-foreground mb-3 italic">
               {bit.context}
             </p>
           )}
+          <p className="text-base sm:text-lg leading-relaxed text-foreground whitespace-pre-wrap break-words">
+            {bit.text}
+          </p>
         </div>
 
         {/* Photo */}
