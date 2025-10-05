@@ -106,19 +106,19 @@ const Index = () => {
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
           <h1 className="text-xl font-bold">Timeline</h1>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <Search className="h-5 w-5" />
-          </Button>
           <div className="flex items-center gap-2">
             {isInstallable && (
               <Button size="icon" variant="ghost" onClick={promptInstall}>
                 <Download className="h-5 w-5" />
               </Button>
             )}
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <Search className="h-5 w-5" />
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
