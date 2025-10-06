@@ -59,7 +59,7 @@ export default function Children() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background pb-24 pt-safe">
+    <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
           <Link to="/">
