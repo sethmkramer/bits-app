@@ -137,6 +137,22 @@ const Index = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
+                {children.length > 0 && (
+                  <>
+                    <DropdownMenuItem onClick={() => setFilters({})}>
+                      {!filters.childId && '✓ '}All Children
+                    </DropdownMenuItem>
+                    {children.map((child) => (
+                      <DropdownMenuItem 
+                        key={child.id}
+                        onClick={() => setFilters({ childId: child.id })}
+                      >
+                        {filters.childId === child.id && '✓ '}{child.name}
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                  </>
+                )}
                 <DropdownMenuItem onClick={() => navigate('/children')}>
                   <Settings className="mr-2 h-4 w-4" />
                   Manage Children
@@ -151,39 +167,6 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Child filter selector */}
-      {children.length > 0 && (
-        <div className="sticky top-16 z-30 bg-background/95 backdrop-blur border-b border-border/50">
-          <div className="max-w-2xl mx-auto px-4 py-3">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
-                  <span>
-                    {filters.childId 
-                      ? children.find(c => c.id === filters.childId)?.name 
-                      : 'All Children'}
-                  </span>
-                  <ChevronDown className="h-4 w-4 ml-2" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[calc(100vw-2rem)] max-w-xl">
-                <DropdownMenuItem onClick={() => setFilters({})}>
-                  All Children
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                {children.map((child) => (
-                  <DropdownMenuItem 
-                    key={child.id}
-                    onClick={() => setFilters({ childId: child.id })}
-                  >
-                    {child.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      )}
 
       {/* Main content */}
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
