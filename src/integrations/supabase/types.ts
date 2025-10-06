@@ -21,6 +21,7 @@ export type Database = {
           context: string | null
           created_at: string
           id: string
+          milestone: string | null
           photo_url: string | null
           text: string
           updated_at: string
@@ -32,6 +33,7 @@ export type Database = {
           context?: string | null
           created_at?: string
           id?: string
+          milestone?: string | null
           photo_url?: string | null
           text: string
           updated_at?: string
@@ -43,6 +45,7 @@ export type Database = {
           context?: string | null
           created_at?: string
           id?: string
+          milestone?: string | null
           photo_url?: string | null
           text?: string
           updated_at?: string

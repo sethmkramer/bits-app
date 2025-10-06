@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { MoreVertical, Pencil, Trash2, Trophy } from 'lucide-react';
 import type { Bit } from '@/hooks/useBits';
 import { format, formatDistanceToNow } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface BitCardProps {
   bit: Bit;
@@ -21,8 +22,21 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
   const childColor = bit.children?.color || 'hsl(211, 100%, 50%)';
   
   return (
-    <Card className="hover:shadow-lg transition-all duration-200 border-border/50 rounded-xl overflow-hidden">
+    <Card className={cn(
+      "hover:shadow-lg transition-all duration-200 border-border/50 rounded-xl overflow-hidden",
+      bit.milestone && "border-2 border-primary/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent"
+    )}>
       <CardContent className="p-0">
+        {/* Milestone banner */}
+        {bit.milestone && (
+          <div className="bg-gradient-to-r from-primary via-primary/90 to-primary px-4 py-2 flex items-center gap-2">
+            <Trophy className="h-4 w-4 text-primary-foreground" />
+            <span className="text-sm font-semibold text-primary-foreground">
+              {bit.milestone}
+            </span>
+          </div>
+        )}
+
         {/* Header with child badge and menu */}
         <div className="flex items-center justify-between px-4 pt-4 pb-4">
           {bit.children && (

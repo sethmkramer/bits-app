@@ -70,7 +70,7 @@ const Index = () => {
     return grouped;
   }, [bits]);
 
-  const handleCreateBit = (data: { text: string; childId?: string; photo?: File; context?: string; bitDate?: string }) => {
+  const handleCreateBit = (data: { text: string; childId?: string; photo?: File; context?: string; bitDate?: string; milestone?: string }) => {
     if (editingBit) {
       updateBit({ id: editingBit.id, ...data });
       setEditingBit(undefined);

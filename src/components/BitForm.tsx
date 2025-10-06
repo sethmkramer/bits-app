@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Camera, X, CalendarIcon, Plus } from 'lucide-react';
+import { Camera, X, CalendarIcon, Plus, Star } from 'lucide-react';
 import { format } from 'date-fns';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +17,19 @@ import { ChildForm } from './ChildForm';
 import { useChildren } from '@/hooks/useChildren';
 import type { Bit } from '@/hooks/useBits';
 import type { Child } from '@/hooks/useChildren';
+
+const DEFAULT_MILESTONES = [
+  'First Words',
+  'First Steps',
+  'First Day of School',
+  'Lost First Tooth',
+  'First Birthday',
+  'Learned to Ride a Bike',
+  'Potty Trained',
+  'First Sleepover',
+  'First Time Swimming',
+  'First Solid Food'
+];
 
 const bitSchema = z.object({
   text: z.string().trim().min(1, 'Text is required').max(5000, 'Text too long (max 5000 characters)'),
@@ -31,7 +44,7 @@ const bitSchema = z.object({
 interface BitFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: { text: string; childId?: string; photo?: File; context?: string; bitDate?: string }) => void;
+  onSubmit: (data: { text: string; childId?: string; photo?: File; context?: string; bitDate?: string; milestone?: string }) => void;
   bit?: Bit;
   children: Child[];
   isLoading?: boolean;
@@ -42,6 +55,8 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
   const [context, setContext] = useState('');
   const [bitDate, setBitDate] = useState<Date>(new Date());
   const [childId, setChildId] = useState<string | undefined>(undefined);
+  const [milestone, setMilestone] = useState<string>('');
+  const [customMilestone, setCustomMilestone] = useState('');
   const [photo, setPhoto] = useState<File | undefined>();
   const [photoPreview, setPhotoPreview] = useState<string | undefined>();
   const [textVoiceStatus, setTextVoiceStatus] = useState<'idle' | 'recording' | 'processing' | 'success'>('idle');
@@ -58,6 +73,8 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
       setContext(bit.context || '');
       setBitDate(bit.bit_date ? new Date(bit.bit_date) : new Date());
       setChildId(bit.child_id || undefined);
+      setMilestone(bit.milestone || '');
+      setCustomMilestone(bit.milestone && !DEFAULT_MILESTONES.includes(bit.milestone) ? bit.milestone : '');
       setPhotoPreview(bit.photo_url || undefined);
       setPhoto(undefined);
     } else if (!bit && open) {
@@ -66,6 +83,8 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
       setContext('');
       setBitDate(new Date());
       setChildId(undefined);
+      setMilestone('');
+      setCustomMilestone('');
       setPhoto(undefined);
       setPhotoPreview(undefined);
     }
@@ -104,12 +123,15 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
       return;
     }
 
+    const finalMilestone = milestone === 'custom' ? customMilestone : milestone;
+
     onSubmit({ 
       text, 
       childId, 
       photo, 
       context: context || undefined,
-      bitDate: format(bitDate, 'yyyy-MM-dd')
+      bitDate: format(bitDate, 'yyyy-MM-dd'),
+      milestone: finalMilestone || undefined
     });
     onOpenChange(false);
   };
@@ -187,6 +209,34 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
                 />
               </PopoverContent>
             </Popover>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="milestone">Milestone (optional)</Label>
+            <Select value={milestone} onValueChange={setMilestone}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a milestone (optional)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">None</SelectItem>
+                {DEFAULT_MILESTONES.map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {m}
+                  </SelectItem>
+                ))}
+                <SelectItem value="custom" className="text-primary font-medium">
+                  + Create Custom Milestone
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            {milestone === 'custom' && (
+              <Input
+                value={customMilestone}
+                onChange={(e) => setCustomMilestone(e.target.value)}
+                placeholder="Enter custom milestone name"
+                maxLength={100}
+              />
+            )}
           </div>
 
           <div className="space-y-2">

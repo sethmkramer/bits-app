@@ -11,6 +11,7 @@ export interface Bit {
   photo_url: string | null;
   context: string | null;
   bit_date: string;
+  milestone: string | null;
   created_at: string;
   updated_at: string;
   children?: {
@@ -81,7 +82,7 @@ export const useBits = (filters: BitFilters = {}) => {
   const bits = data?.pages.flatMap(page => page.bits) ?? [];
 
   const createBit = useMutation({
-    mutationFn: async ({ text, childId, photo, context, bitDate }: { text: string; childId?: string; photo?: File; context?: string; bitDate?: string }) => {
+    mutationFn: async ({ text, childId, photo, context, bitDate, milestone }: { text: string; childId?: string; photo?: File; context?: string; bitDate?: string; milestone?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
@@ -112,7 +113,8 @@ export const useBits = (filters: BitFilters = {}) => {
           child_id: childId || null,
           photo_url: photoUrl,
           context: context || null,
-          bit_date: bitDate || new Date().toISOString().split('T')[0]
+          bit_date: bitDate || new Date().toISOString().split('T')[0],
+          milestone: milestone || null
         })
         .select('*, children(id, name, color, photo_url)')
         .single();
@@ -135,7 +137,7 @@ export const useBits = (filters: BitFilters = {}) => {
   });
 
   const updateBit = useMutation({
-    mutationFn: async ({ id, text, childId, photo, context, bitDate }: { id: string; text: string; childId?: string; photo?: File; context?: string; bitDate?: string }) => {
+    mutationFn: async ({ id, text, childId, photo, context, bitDate, milestone }: { id: string; text: string; childId?: string; photo?: File; context?: string; bitDate?: string; milestone?: string }) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
@@ -167,6 +169,9 @@ export const useBits = (filters: BitFilters = {}) => {
       }
       if (bitDate !== undefined) {
         updateData.bit_date = bitDate;
+      }
+      if (milestone !== undefined) {
+        updateData.milestone = milestone || null;
       }
 
       const { error } = await supabase
