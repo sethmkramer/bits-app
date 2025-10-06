@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { Search } from 'lucide-react';
 import type { Child } from '@/hooks/useChildren';
 import { useAnalytics } from '@/hooks/useAnalytics';
@@ -15,7 +14,6 @@ interface TimelineFiltersProps {
     childId?: string;
     dateFrom?: string;
     dateTo?: string;
-    hasPhoto?: boolean;
     milestone?: string;
   }) => void;
 }
@@ -25,7 +23,6 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
   const [childId, setChildId] = useState<string | undefined>();
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
-  const [hasPhoto, setHasPhoto] = useState<boolean | undefined>();
   const [milestone, setMilestone] = useState<string | undefined>();
   const { trackEvent } = useAnalytics();
 
@@ -35,13 +32,12 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
       childId: childId === 'all' ? undefined : childId,
       dateFrom: dateFrom || undefined,
       dateTo: dateTo || undefined,
-      hasPhoto,
       milestone
     };
     onFilterChange(filters);
     
     if (searchText) trackEvent('search_performed', { query: searchText });
-    if (childId || dateFrom || dateTo || hasPhoto !== undefined || milestone) {
+    if (childId || dateFrom || dateTo || milestone) {
       trackEvent('filter_applied', filters);
     }
   };
@@ -51,7 +47,6 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
     setChildId(undefined);
     setDateFrom('');
     setDateTo('');
-    setHasPhoto(undefined);
     setMilestone(undefined);
     onFilterChange({});
   };
@@ -121,14 +116,6 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
               <SelectItem value="no_milestone">No Milestone</SelectItem>
             </SelectContent>
           </Select>
-        </div>
-
-        <div className="flex items-center justify-between py-2">
-          <Label className="text-sm">Has Photo</Label>
-          <Switch
-            checked={hasPhoto ?? false}
-            onCheckedChange={(checked) => setHasPhoto(checked ? true : undefined)}
-          />
         </div>
 
         <div className="flex gap-2 pt-2">

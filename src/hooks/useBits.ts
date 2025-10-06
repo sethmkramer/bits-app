@@ -27,7 +27,6 @@ interface BitFilters {
   childId?: string;
   dateFrom?: string;
   dateTo?: string;
-  hasPhoto?: boolean;
   milestone?: string;
 }
 
@@ -58,13 +57,6 @@ export const useBits = (filters: BitFilters = {}) => {
       }
       if (filters.dateTo) {
         query = query.lte('created_at', filters.dateTo);
-      }
-      if (filters.hasPhoto !== undefined) {
-        if (filters.hasPhoto) {
-          query = query.not('photo_url', 'is', null);
-        } else {
-          query = query.is('photo_url', null);
-        }
       }
       if (filters.milestone) {
         if (filters.milestone === 'has_milestone') {
