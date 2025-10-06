@@ -114,7 +114,7 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-20 pt-safe">
       {/* Tagline banner */}
       <div className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 border-b border-border/50">
         <div className="max-w-2xl mx-auto px-4 py-3 text-center">
