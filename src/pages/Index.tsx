@@ -11,8 +11,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { BitForm } from '@/components/BitForm';
 import { BitCard } from '@/components/BitCard';
 import { BottomNav } from '@/components/BottomNav';
-import { TimelineFilters } from '@/components/TimelineFilters';
-import { LogOut, Download, Settings, Menu, Search, ChevronDown } from 'lucide-react';
+import { LogOut, Download, Settings, Menu, ChevronDown } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { Bit } from '@/hooks/useBits';
 import { format, parseISO } from 'date-fns';
@@ -28,7 +27,6 @@ const Index = () => {
 
   const [showBitForm, setShowBitForm] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
   const [editingBit, setEditingBit] = useState<Bit | undefined>();
 
   useEffect(() => {
@@ -132,13 +130,6 @@ const Index = () => {
                 <Download className="h-5 w-5" />
               </Button>
             )}
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <Search className="h-5 w-5" />
-            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
@@ -196,10 +187,6 @@ const Index = () => {
 
       {/* Main content */}
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        {showFilters && (
-          <TimelineFilters children={children} onFilterChange={setFilters} />
-        )}
-
         {bitsLoading ? (
           <p className="text-center text-muted-foreground py-12">Loading...</p>
         ) : bits.length === 0 ? (
