@@ -28,6 +28,7 @@ interface BitFilters {
   dateFrom?: string;
   dateTo?: string;
   hasPhoto?: boolean;
+  milestone?: string;
 }
 
 const BITS_PER_PAGE = 20;
@@ -63,6 +64,13 @@ export const useBits = (filters: BitFilters = {}) => {
           query = query.not('photo_url', 'is', null);
         } else {
           query = query.is('photo_url', null);
+        }
+      }
+      if (filters.milestone) {
+        if (filters.milestone === 'has_milestone') {
+          query = query.not('milestone', 'is', null);
+        } else if (filters.milestone === 'no_milestone') {
+          query = query.is('milestone', null);
         }
       }
 

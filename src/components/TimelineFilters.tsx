@@ -16,6 +16,7 @@ interface TimelineFiltersProps {
     dateFrom?: string;
     dateTo?: string;
     hasPhoto?: boolean;
+    milestone?: string;
   }) => void;
 }
 
@@ -25,6 +26,7 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [hasPhoto, setHasPhoto] = useState<boolean | undefined>();
+  const [milestone, setMilestone] = useState<string | undefined>();
   const { trackEvent } = useAnalytics();
 
   const handleApply = () => {
@@ -33,12 +35,13 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
       childId: childId === 'all' ? undefined : childId,
       dateFrom: dateFrom || undefined,
       dateTo: dateTo || undefined,
-      hasPhoto
+      hasPhoto,
+      milestone: milestone === 'all' ? undefined : milestone
     };
     onFilterChange(filters);
     
     if (searchText) trackEvent('search_performed', { query: searchText });
-    if (childId || dateFrom || dateTo || hasPhoto !== undefined) {
+    if (childId || dateFrom || dateTo || hasPhoto !== undefined || milestone) {
       trackEvent('filter_applied', filters);
     }
   };
@@ -49,6 +52,7 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
     setDateFrom('');
     setDateTo('');
     setHasPhoto(undefined);
+    setMilestone(undefined);
     onFilterChange({});
   };
 
@@ -104,6 +108,20 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
               max={new Date().toISOString().split('T')[0]}
             />
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-sm">Milestone</Label>
+          <Select value={milestone} onValueChange={setMilestone}>
+            <SelectTrigger>
+              <SelectValue placeholder="All milestones" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All milestones</SelectItem>
+              <SelectItem value="has_milestone">Has any milestone</SelectItem>
+              <SelectItem value="no_milestone">No milestone</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex items-center justify-between py-2">

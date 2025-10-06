@@ -21,7 +21,7 @@ const Index = () => {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { children, isLoading: childrenLoading } = useChildren();
-  const [filters, setFilters] = useState<{ childId?: string }>({});
+  const [filters, setFilters] = useState<{ childId?: string; milestone?: string }>({});
   const { bits, fetchNextPage, hasNextPage, isFetchingNextPage, createBit, updateBit, deleteBit, isLoading: bitsLoading, isCreating: bitCreating, isUpdating: bitUpdating } = useBits(filters);
   const { trackEvent } = useAnalytics();
   const { isInstallable, promptInstall } = usePWAInstall();
