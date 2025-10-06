@@ -107,11 +107,12 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
 
         <div className="space-y-2">
           <Label className="text-sm">Milestone Filter</Label>
-          <Select value={milestone || ''} onValueChange={(value) => setMilestone(value || undefined)}>
+          <Select value={milestone || 'none'} onValueChange={(value) => setMilestone(value === 'none' ? undefined : value)}>
             <SelectTrigger>
               <SelectValue placeholder="No filter" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="none">No Filter</SelectItem>
               <SelectItem value="has_milestone">Has Milestone</SelectItem>
               <SelectItem value="no_milestone">No Milestone</SelectItem>
             </SelectContent>
