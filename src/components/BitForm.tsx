@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { VoiceRecorder } from './VoiceRecorder';
 import { ChildForm } from './ChildForm';
 import { useChildren } from '@/hooks/useChildren';
+import { useMilestones } from '@/hooks/useMilestones';
 import type { Bit } from '@/hooks/useBits';
 import type { Child } from '@/hooks/useChildren';
 
@@ -65,6 +66,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
   const { createChild, isCreating } = useChildren();
+  const { milestones: savedMilestones, createMilestone } = useMilestones();
 
   // Update form when bit prop changes (for editing)
   useEffect(() => {
@@ -73,11 +75,12 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
       setContext(bit.context || '');
       setBitDate(bit.bit_date ? new Date(bit.bit_date) : new Date());
       setChildId(bit.child_id || undefined);
+      const allMilestones = [...DEFAULT_MILESTONES, ...savedMilestones.map(m => m.name)];
       const milestoneValue = bit.milestone 
-        ? (DEFAULT_MILESTONES.includes(bit.milestone) ? bit.milestone : 'custom')
+        ? (allMilestones.includes(bit.milestone) ? bit.milestone : 'custom')
         : 'none';
       setMilestone(milestoneValue);
-      setCustomMilestone(bit.milestone && !DEFAULT_MILESTONES.includes(bit.milestone) ? bit.milestone : '');
+      setCustomMilestone(bit.milestone && !allMilestones.includes(bit.milestone) ? bit.milestone : '');
       setPhotoPreview(bit.photo_url || undefined);
       setPhoto(undefined);
     } else if (!bit && open) {
@@ -130,6 +133,11 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
     }
 
     const finalMilestone = milestone === 'custom' ? customMilestone : (milestone === 'none' ? '' : milestone);
+
+    // Save custom milestone if it's new
+    if (milestone === 'custom' && customMilestone.trim()) {
+      createMilestone(customMilestone.trim());
+    }
 
     onSubmit({ 
       text, 
@@ -230,6 +238,19 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
                     {m}
                   </SelectItem>
                 ))}
+                {savedMilestones.length > 0 && (
+                  <>
+                    <SelectItem value="divider" disabled className="text-xs text-muted-foreground font-semibold">
+                      Your Custom Milestones
+                    </SelectItem>
+                    {savedMilestones.map((m) => (
+                      <SelectItem key={m.id} value={m.name}>
+                        <Star className="inline h-3 w-3 mr-1 text-primary" />
+                        {m.name}
+                      </SelectItem>
+                    ))}
+                  </>
+                )}
                 <SelectItem value="custom" className="text-primary font-medium">
                   + Create Custom Milestone
                 </SelectItem>
