@@ -118,9 +118,12 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
 
     const result = bitSchema.safeParse({ text, photo, childId });
     if (!result.success) {
+      const errors = result.error.errors;
+      const errorMessages = errors.map(err => err.message).join(', ');
+      
       toast({
-        title: 'Validation error',
-        description: result.error.errors[0].message,
+        title: 'Cannot save bit',
+        description: errorMessages,
         variant: 'destructive'
       });
       return;
