@@ -6,7 +6,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { MoreVertical, Pencil, Trash2, Trophy } from 'lucide-react';
 import type { Bit } from '@/hooks/useBits';
 import { format, formatDistanceToNow } from 'date-fns';
-import { cn } from '@/lib/utils';
 
 interface BitCardProps {
   bit: Bit;
@@ -21,11 +20,12 @@ export const BitCard = ({ bit, onEdit, onDelete }: BitCardProps) => {
 
   const childColor = bit.children?.color || 'hsl(211, 100%, 50%)';
   
+  const cardClassName = bit.milestone 
+    ? "hover:shadow-lg transition-all duration-200 border-2 border-primary/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent rounded-xl overflow-hidden"
+    : "hover:shadow-lg transition-all duration-200 border-border/50 rounded-xl overflow-hidden";
+  
   return (
-    <Card className={cn(
-      "hover:shadow-lg transition-all duration-200 border-border/50 rounded-xl overflow-hidden",
-      bit.milestone && "border-2 border-primary/40 bg-gradient-to-br from-primary/5 via-transparent to-transparent"
-    )}>
+    <Card className={cardClassName}>
       <CardContent className="p-0">
         {/* Milestone banner */}
         {bit.milestone && (
