@@ -92,12 +92,25 @@ const Index = () => {
     }
   };
 
-  if (authLoading || !user) {
+  if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <p className="text-muted-foreground">Loading...</p>
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center">
+            <svg width="48" height="48" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0" y="20" width="18" height="10" rx="1.5" fill="#FFB84D" stroke="white" strokeWidth="2"/>
+              <rect x="6" y="10" width="18" height="10" rx="1.5" fill="#FF6B6B" stroke="white" strokeWidth="2"/>
+              <rect x="12" y="0" width="18" height="10" rx="1.5" fill="#4ECDC4" stroke="white" strokeWidth="2"/>
+            </svg>
+          </div>
+          <p className="text-lg font-medium text-foreground">Loading Bits...</p>
+        </div>
       </div>
     );
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (
