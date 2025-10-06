@@ -49,6 +49,11 @@ const Index = () => {
       setShowOnboarding(true);
       localStorage.setItem('hasSeenOnboarding', 'true');
     }
+    
+    // Close onboarding if children exist
+    if (children.length > 0) {
+      setShowOnboarding(false);
+    }
   }, [user, children, childrenLoading]);
 
   useEffect(() => {
