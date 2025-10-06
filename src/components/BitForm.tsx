@@ -73,7 +73,10 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
       setContext(bit.context || '');
       setBitDate(bit.bit_date ? new Date(bit.bit_date) : new Date());
       setChildId(bit.child_id || undefined);
-      setMilestone(bit.milestone || '');
+      const milestoneValue = bit.milestone 
+        ? (DEFAULT_MILESTONES.includes(bit.milestone) ? bit.milestone : 'custom')
+        : 'none';
+      setMilestone(milestoneValue);
       setCustomMilestone(bit.milestone && !DEFAULT_MILESTONES.includes(bit.milestone) ? bit.milestone : '');
       setPhotoPreview(bit.photo_url || undefined);
       setPhoto(undefined);
@@ -83,7 +86,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
       setContext('');
       setBitDate(new Date());
       setChildId(undefined);
-      setMilestone('');
+      setMilestone('none');
       setCustomMilestone('');
       setPhoto(undefined);
       setPhotoPreview(undefined);
@@ -123,7 +126,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
       return;
     }
 
-    const finalMilestone = milestone === 'custom' ? customMilestone : milestone;
+    const finalMilestone = milestone === 'custom' ? customMilestone : (milestone === 'none' ? '' : milestone);
 
     onSubmit({ 
       text, 
@@ -218,7 +221,7 @@ export const BitForm = ({ open, onOpenChange, onSubmit, bit, children, isLoading
                 <SelectValue placeholder="Select a milestone (optional)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 {DEFAULT_MILESTONES.map((m) => (
                   <SelectItem key={m} value={m}>
                     {m}
