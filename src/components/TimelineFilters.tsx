@@ -36,7 +36,7 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
       dateFrom: dateFrom || undefined,
       dateTo: dateTo || undefined,
       hasPhoto,
-      milestone: milestone === 'all' ? undefined : milestone
+      milestone
     };
     onFilterChange(filters);
     
@@ -111,15 +111,14 @@ export const TimelineFilters = ({ children, onFilterChange }: TimelineFiltersPro
         </div>
 
         <div className="space-y-2">
-          <Label className="text-sm">Milestone</Label>
-          <Select value={milestone} onValueChange={setMilestone}>
+          <Label className="text-sm">Milestone Filter</Label>
+          <Select value={milestone || ''} onValueChange={(value) => setMilestone(value || undefined)}>
             <SelectTrigger>
-              <SelectValue placeholder="All milestones" />
+              <SelectValue placeholder="No filter" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All milestones</SelectItem>
-              <SelectItem value="has_milestone">Has any milestone</SelectItem>
-              <SelectItem value="no_milestone">No milestone</SelectItem>
+              <SelectItem value="has_milestone">Has Milestone</SelectItem>
+              <SelectItem value="no_milestone">No Milestone</SelectItem>
             </SelectContent>
           </Select>
         </div>
